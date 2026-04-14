@@ -65,9 +65,11 @@ export default function Navbar() {
           </Link>
           {isLoggedIn ? (
             <div className="navbar__user-menu">
-              <div className="navbar__avatar">{user.avatar}</div>
-              <span className="navbar__user-name">{user.name}</span>
-              <button className="navbar__logout-btn" onClick={logout} id="nav-logout">
+              <Link to="/profile" className="navbar__profile-link" title="My Profile">
+                <div className="navbar__avatar">{user.avatar}</div>
+                <span className="navbar__user-name">{user.name}</span>
+              </Link>
+              <button className="navbar__logout-btn" onClick={logout} id="nav-logout" title="Sign Out">
                 <FiLogOut />
               </button>
             </div>

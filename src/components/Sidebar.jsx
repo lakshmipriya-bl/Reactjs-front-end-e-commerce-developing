@@ -40,10 +40,10 @@ export default function Sidebar({
 }) {
   const priceOptions = [
     { label: 'All Prices', value: [0, 10000] },
-    { label: 'Under ₹5,000',  value: [0,    Math.round(5000  / USD_TO_INR)] },
+    { label: 'Under ₹1,000',  value: [0,    Math.round(1000  / USD_TO_INR)] },
+    { label: '₹1,000 – ₹5,000', value: [Math.round(1000 / USD_TO_INR), Math.round(5000 / USD_TO_INR)] },
     { label: '₹5,000 – ₹10,000', value: [Math.round(5000 / USD_TO_INR), Math.round(10000 / USD_TO_INR)] },
-    { label: '₹10,000 – ₹50,000', value: [Math.round(10000 / USD_TO_INR), Math.round(50000 / USD_TO_INR)] },
-    { label: '₹50,000+', value: [Math.round(50000 / USD_TO_INR), 10000] },
+    { label: '₹10,000+', value: [Math.round(10000 / USD_TO_INR), 10000] },
   ];
 
   const ratingOptions = [0, 4, 3, 2, 1];

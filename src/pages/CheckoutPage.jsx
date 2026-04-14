@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useOrders } from '../context/OrderContext';
 import { formatINR } from '../utils/currency';
 import { 
   FiChevronRight, 
@@ -14,9 +15,11 @@ import './CheckoutPage.css';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, cartCount, clearCartItems } = useCart();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState(null);
   
   const gst = cartTotal * 0.18;
   const totalAmount = cartTotal + gst;
@@ -29,7 +32,9 @@ export default function CheckoutPage() {
     zip: '',
     cardNum: '',
     expiry: '',
-    cvv: ''
+    cvv: '',
+    paymentMethod: 'credit_card',
+    upiId: ''
   });
 
   const handleInputChange = (e) => {
@@ -49,8 +54,22 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
+    
     // Simulate payment processing
     await new Promise(res => setTimeout(res, 2000));
+    
+    const orderData = {
+      items: cart,
+      subtotal: cartTotal,
+      gst: gst,
+      total: totalAmount,
+      shipping: formData,
+      paymentMethod: formData.paymentMethod
+    };
+    
+    const newOrder = addOrder(orderData);
+    setPlacedOrder(newOrder);
+    
     setIsProcessing(false);
     setStep(3);
     clearCartItems();
@@ -141,24 +160,75 @@ export default function CheckoutPage() {
                 {step === 2 && (
                   <form onSubmit={handlePlaceOrder} className="checkout-form card glass animate-fade-in-up">
                     <h3 className="checkout-form__title"><FiCreditCard /> Payment Details</h3>
-                    <div className="checkout-form__grid">
-                        <div className="input-group full">
-                            <label>Card Number</label>
-                            <input type="text" name="cardNum" required className="input-field" value={formData.cardNum} onChange={handleInputChange} placeholder="0000 0000 0000 0000" />
-                        </div>
-                        <div className="input-group">
-                            <label>Expiry Date</label>
-                            <input type="text" name="expiry" required className="input-field" value={formData.expiry} onChange={handleInputChange} placeholder="MM/YY" />
-                        </div>
-                        <div className="input-group">
-                            <label>CVV</label>
-                            <input type="password" name="cvv" required className="input-field" value={formData.cvv} onChange={handleInputChange} placeholder="***" />
-                        </div>
+                    
+                    <div className="payment-methods" style={{ marginBottom: '24px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input type="radio" name="paymentMethod" value="credit_card" checked={formData.paymentMethod === 'credit_card'} onChange={handleInputChange} />
+                        Credit Card
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input type="radio" name="paymentMethod" value="gpay" checked={formData.paymentMethod === 'gpay'} onChange={handleInputChange} />
+                        GPay
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input type="radio" name="paymentMethod" value="phonepe" checked={formData.paymentMethod === 'phonepe'} onChange={handleInputChange} />
+                        PhonePe
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleInputChange} />
+                        Cash on Delivery
+                      </label>
                     </div>
+
+                    {formData.paymentMethod === 'credit_card' && (
+                      <div className="checkout-form__grid">
+                          <div className="input-group full">
+                              <label>Card Number</label>
+                              <input type="text" name="cardNum" required className="input-field" value={formData.cardNum} onChange={handleInputChange} placeholder="0000 0000 0000 0000" />
+                          </div>
+                          <div className="input-group">
+                              <label>Expiry Date</label>
+                              <input type="text" name="expiry" required className="input-field" value={formData.expiry} onChange={handleInputChange} placeholder="MM/YY" />
+                          </div>
+                          <div className="input-group">
+                              <label>CVV</label>
+                              <input type="password" name="cvv" required className="input-field" value={formData.cvv} onChange={handleInputChange} placeholder="***" />
+                          </div>
+                      </div>
+                    )}
+
+                    {formData.paymentMethod === 'gpay' && (
+                      <div className="checkout-form__grid">
+                         <div className="input-group full">
+                            <label>UPI ID (GPay)</label>
+                            <input type="text" name="upiId" required className="input-field" value={formData.upiId} onChange={handleInputChange} placeholder="username@okaxis" />
+                         </div>
+                      </div>
+                    )}
+
+                    {formData.paymentMethod === 'phonepe' && (
+                      <div className="checkout-form__grid">
+                         <div className="input-group full">
+                            <label>UPI ID (PhonePe)</label>
+                            <input type="text" name="upiId" required className="input-field" value={formData.upiId} onChange={handleInputChange} placeholder="username@ybl" />
+                         </div>
+                      </div>
+                    )}
+
+                    {formData.paymentMethod === 'cod' && (
+                      <div className="checkout-form__grid">
+                         <div className="input-group full">
+                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5' }}>
+                              You can pay the delivery executive at your doorstep. Cash and UPI payments are accepted.
+                            </p>
+                         </div>
+                      </div>
+                    )}
+
                     <div className="checkout-form__actions">
                         <button type="button" onClick={prevStep} className="btn btn-secondary"><FiArrowLeft /> Back to Shipping</button>
                         <button type="submit" className="btn btn-primary" disabled={isProcessing}>
-                            {isProcessing ? 'Processing...' : `Pay ${formatINR(totalAmount)}`}
+                            {isProcessing ? 'Processing...' : formData.paymentMethod === 'cod' ? 'Place Order' : `Pay ${formatINR(totalAmount)}`}
                         </button>
                     </div>
                   </form>
@@ -201,11 +271,11 @@ export default function CheckoutPage() {
             <div className="checkout-success animate-fade-in-up">
               <div className="checkout-success__icon"><FiCheckCircle /></div>
               <h2 className="section-title">Order Placed Successfully!</h2>
-              <p className="section-subtitle">Thank you for your purchase. Your order #LUXE-{Math.floor(Math.random() * 90000) + 10000} has been confirmed.</p>
+              <p className="section-subtitle">Thank you for your purchase. Your order #{placedOrder?.id || 'LUXE-PROCESSING'} has been confirmed.</p>
               <p className="checkout-success__note">A confirmation email has been sent to {formData.email}.</p>
               <div className="checkout-success__actions">
                 <Link to="/products" className="btn btn-primary">Continue Shopping</Link>
-                <Link to="/" className="btn btn-secondary">Go to Homepage</Link>
+                <Link to="/profile" className="btn btn-secondary">View Order History</Link>
               </div>
             </div>
           )}

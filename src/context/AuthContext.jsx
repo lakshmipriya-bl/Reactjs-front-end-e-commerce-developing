@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
       email,
       name: email.split('@')[0],
       avatar: email.charAt(0).toUpperCase(),
+      isAdmin: email === 'admin@luxestore.com',
     };
     setUser(userData);
     localStorage.setItem('ecom_user', JSON.stringify(userData));

@@ -12,11 +12,47 @@ import {
 } from 'react-icons/fi';
 import './HomePage.css';
 
+const HERO_BANNERS = [
+  {
+    id: 1,
+    badge: '✨ New Collection 2026',
+    title: <>Discover <span className="hero__title-accent">Premium</span> Products</>,
+    subtitle: 'Explore our curated selection of premium products. From tech to fashion, find everything you need in one place.',
+    type: 'image',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200'
+  },
+  {
+    id: 2,
+    badge: '🧴 Luxury Restored',
+    title: <>Exclusive <span className="hero__title-accent">Beauty</span> & Care</>,
+    subtitle: 'Elevate your daily routine with our newly restocked, premium branded beauty and fragrance collections.',
+    type: 'image',
+    image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1200'
+  },
+  {
+    id: 3,
+    badge: '💻 Cutting-Edge Tech',
+    title: <>Next-Gen <span className="hero__title-accent">Gadgets</span></>,
+    subtitle: 'Stay ahead of the curve. Discover the latest laptops, smartphones, and accessories curated for modern professionals.',
+    type: 'image',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200'
+  }
+];
+
+
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_BANNERS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -77,69 +113,106 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      {/* Hero Banner */}
-      <section className="hero" id="hero-section">
+      {/* Hero Carousel Banner */}
+      <section className="hero hero--carousel" id="hero-section">
         <div className="hero__bg">
           <div className="hero__gradient-orb hero__gradient-orb--1" />
           <div className="hero__gradient-orb hero__gradient-orb--2" />
           <div className="hero__gradient-orb hero__gradient-orb--3" />
         </div>
-        <div className="hero__content container">
-          <div className="hero__text">
-            <span className="hero__badge animate-fade-in">
-              ✨ New Collection 2026
-            </span>
-            <h1 className="hero__title animate-fade-in-up">
-              Discover
-              <span className="hero__title-accent"> Premium </span>
-              Products
-            </h1>
-            <p className="hero__subtitle animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              Explore our curated selection of premium products. From tech to fashion,
-              find everything you need in one place.
-            </p>
-            <div className="hero__actions animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <Link to="/products" className="btn btn-primary btn-lg" id="hero-shop-now">
-                Shop Now <FiArrowRight />
-              </Link>
-              <Link to="/products" className="btn btn-secondary btn-lg" id="hero-explore">
-                Explore Categories
-              </Link>
-            </div>
-            <div className="hero__stats animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <div className="hero__stat">
-                <span className="hero__stat-value">200+</span>
-                <span className="hero__stat-label">Products</span>
-              </div>
-              <div className="hero__stat-divider" />
-              <div className="hero__stat">
-                <span className="hero__stat-value">50+</span>
-                <span className="hero__stat-label">Brands</span>
-              </div>
-              <div className="hero__stat-divider" />
-              <div className="hero__stat">
-                <span className="hero__stat-value">24/7</span>
-                <span className="hero__stat-label">Support</span>
-              </div>
-            </div>
-          </div>
-          <div className="hero__visual animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="hero__card-stack">
-              {products.slice(0, 3).map((p, i) => (
-                <div
-                  key={p.id}
-                  className="hero__floating-card"
-                  style={{
-                    animationDelay: `${i * 0.3}s`,
-                    '--rotation': `${(i - 1) * 8}deg`,
-                    '--offset': `${(i - 1) * 30}px`,
-                  }}
-                >
-                  <img src={p.thumbnail} alt={p.title} />
+        
+        {HERO_BANNERS.map((banner, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <div 
+              key={banner.id} 
+              className={`hero__slide ${isActive ? 'hero__slide--active' : ''}`}
+            >
+              <div className="hero__content container">
+                <div className="hero__text">
+                  {/* We conditionally render classes so keyframes reset on slide change */}
+                  {isActive && (
+                    <>
+                      <span className="hero__badge animate-fade-in">
+                        {banner.badge}
+                      </span>
+                      <h1 className="hero__title animate-fade-in-up">
+                        {banner.title}
+                      </h1>
+                      <p className="hero__subtitle animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                        {banner.subtitle}
+                      </p>
+                      <div className="hero__actions animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                        <Link to="/products" className="btn btn-primary btn-lg">
+                          Shop Now <FiArrowRight />
+                        </Link>
+                        <Link to="/products" className="btn btn-secondary btn-lg">
+                          Explore Categories
+                        </Link>
+                      </div>
+                      {banner.type === 'cards' && (
+                        <div className="hero__stats animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                          <div className="hero__stat">
+                            <span className="hero__stat-value">200+</span>
+                            <span className="hero__stat-label">Products</span>
+                          </div>
+                          <div className="hero__stat-divider" />
+                          <div className="hero__stat">
+                            <span className="hero__stat-value">50+</span>
+                            <span className="hero__stat-label">Brands</span>
+                          </div>
+                          <div className="hero__stat-divider" />
+                          <div className="hero__stat">
+                            <span className="hero__stat-value">24/7</span>
+                            <span className="hero__stat-label">Support</span>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-              ))}
+                <div className={`hero__visual ${isActive ? 'animate-fade-in' : ''}`} style={{ animationDelay: '0.2s' }}>
+                  {isActive && (
+                    <>
+                      {banner.type === 'cards' ? (
+                        <div className="hero__card-stack">
+                          {products.slice(0, 3).map((p, i) => (
+                            <div
+                              key={p.id}
+                              className="hero__floating-card"
+                              style={{
+                                animationDelay: `${i * 0.3}s`,
+                                '--rotation': `${(i - 1) * 8}deg`,
+                                '--offset': `${(i - 1) * 30}px`,
+                              }}
+                            >
+                              <img src={p.thumbnail} alt={p.title} />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="hero__image-showcase">
+                          <img src={banner.image} alt={banner.badge} className="hero__showcase-img" />
+                          <div className="hero__image-glow" />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
+          );
+        })}
+
+        <div className="hero__carousel-controls">
+          {HERO_BANNERS.map((_, index) => (
+            <button
+              key={index}
+              className={`hero__dot ${index === currentSlide ? 'hero__dot--active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 

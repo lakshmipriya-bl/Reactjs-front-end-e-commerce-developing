@@ -50,12 +50,28 @@
   animation: float 12s ease-in-out infinite;
 }
 
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  display: flex;
+  align-items: center;
+}
+
+.hero__slide--active {
+  opacity: 1;
+  visibility: visible;
+}
+
 .hero__content {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
+  width: 100%;
   padding-top: 40px;
   padding-bottom: 60px;
 }
@@ -184,6 +200,64 @@
 .hero__floating-card:nth-child(1) { z-index: 1; }
 .hero__floating-card:nth-child(2) { z-index: 2; }
 .hero__floating-card:nth-child(3) { z-index: 3; }
+
+.hero__image-showcase {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(108, 92, 231, 0.15);
+}
+
+.hero__showcase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__image-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 15, 0.6), transparent 50%);
+  pointer-events: none;
+}
+
+/* Carousel Controls */
+.hero__carousel-controls {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.hero__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(200, 200, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.hero__dot:hover {
+  background: rgba(200, 200, 255, 0.4);
+}
+
+.hero__dot--active {
+  background: var(--accent-gradient);
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+  width: 36px;
+  border-radius: var(--radius-full);
+  border-color: transparent;
+  box-shadow: var(--accent-glow);
+}
 
 /* ================
    Features Strip

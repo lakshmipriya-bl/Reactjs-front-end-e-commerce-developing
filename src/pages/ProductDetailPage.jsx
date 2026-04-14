@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { fetchProductById, fetchProductsByCategory } from '../utils/api';
+import { fetchProductById } from '../utils/api';
 import { formatINR } from '../utils/currency';
 import {
   FiShoppingCart,
+  FiCreditCard,
   FiChevronRight,
   FiStar,
   FiMinus,
@@ -19,6 +20,7 @@ import './ProductDetailPage.css';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [product, setProduct] = useState(null);
@@ -27,7 +29,6 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-  const [relatedProducts, setRelatedProducts] = useState([]);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState(false);
 
@@ -41,10 +42,6 @@ export default function ProductDetailPage() {
         setSelectedImage(0);
         setQuantity(1);
         setActiveTab('description');
-
-        // Fetch related products
-        const related = await fetchProductsByCategory(data.category);
-        setRelatedProducts(related.products.filter(p => p.id !== parseInt(id)).slice(0, 4));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -67,6 +64,15 @@ export default function ProductDetailPage() {
       for (let i = 0; i < quantity; i++) {
         addToCart(product);
       }
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (product) {
+      for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+      }
+      navigate('/checkout');
     }
   };
 
@@ -268,11 +274,18 @@ export default function ProductDetailPage() {
                 </button>
               </div>
               <button
-                className="btn btn-primary pdp-info__add-btn"
+                className="btn btn-secondary pdp-info__add-btn"
                 onClick={handleAddToCart}
                 id="pdp-add-to-cart"
               >
                 <FiShoppingCart /> Add to Cart
+              </button>
+              <button
+                className="btn btn-primary pdp-info__buy-btn"
+                onClick={handleBuyNow}
+                id="pdp-buy-now"
+              >
+                <FiCreditCard /> Buy Now
               </button>
               <button 
                 className={`btn-icon pdp-info__wish-btn ${isInWishlist(product.id) ? 'pdp-info__wish-btn--active' : ''}`} 
@@ -330,33 +343,6 @@ export default function ProductDetailPage() {
           </section>
         )}
 
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <section className="pdp-related animate-fade-in-up" id="pdp-related">
-            <h2 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Related Products</h2>
-            <div className="products-grid">
-              {relatedProducts.map((p, i) => (
-                <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                  <Link to={`/products/${p.id}`} className="product-card card">
-                    <div className="product-card__image-wrap">
-                      <img src={p.thumbnail} alt={p.title} className="product-card__image" />
-                    </div>
-                    <div className="product-card__body">
-                        <h3 className="product-card__title">{p.title}</h3>
-                        <div className="product-card__footer">
-                            <span className="product-card__price">{formatINR(p.price)}</span>
-                            <div className="product-card__rating">
-                                <FiStar className="product-card__star" />
-                                <span>{p.rating?.toFixed(1)}</span>
-                            </div>
-                        </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </div>
   );
