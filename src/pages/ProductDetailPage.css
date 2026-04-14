@@ -427,6 +427,13 @@
 @media (max-width: 768px) {
   .pdp-page {
     padding-top: 80px;
+    padding-bottom: 100px; /* Space for sticky actions */
+  }
+
+  .pdp-breadcrumbs {
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
   }
 
   .pdp-layout,
@@ -443,21 +450,52 @@
     font-size: 1.6rem;
   }
 
+  /* Sticky Actions */
   .pdp-info__actions {
-    flex-direction: column;
-    align-items: stretch;
+    position: fixed;
+    bottom: 65px; /* Above Bottom Nav */
+    left: 0;
+    right: 0;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+    z-index: 999;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
   }
 
   .pdp-info__qty {
-    justify-content: center;
+    display: none; /* Hide quantity on mobile sticky bar to save space */
   }
 
   .pdp-info__add-btn,
   .pdp-info__buy-btn {
+    flex: 1;
     min-width: auto;
+    font-size: 0.9rem;
+    padding: 12px 10px;
+  }
+
+  .pdp-info__wish-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-card);
   }
 
   .pdp-reviews__grid {
     grid-template-columns: 1fr;
+  }
+
+  .pdp-tabs__header {
+    gap: 16px;
+  }
+
+  .pdp-tabs__btn {
+    font-size: 0.85rem;
   }
 }

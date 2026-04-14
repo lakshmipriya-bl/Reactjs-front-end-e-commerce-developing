@@ -221,10 +221,36 @@
 }
 
 @media (max-width: 640px) {
+    .checkout-page {
+        padding-top: 100px;
+    }
+
     .checkout-form__grid {
         grid-template-columns: 1fr;
     }
     .input-group.full {
         grid-column: span 1;
+    }
+
+    .checkout-header {
+        margin-bottom: 32px;
+    }
+
+    .checkout-steps {
+        gap: 8px;
+    }
+
+    .checkout-step-line {
+        width: 30px;
+    }
+
+    .checkout-step__num {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .checkout-step__label {
+        font-size: 0.65rem;
     }
 }

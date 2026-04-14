@@ -8,16 +8,22 @@ import {
   FiUsers, 
   FiSettings, 
   FiLogOut,
-  FiHome,
   FiSun,
-  FiMoon
+  FiMoon,
+  FiMenu,
+  FiX
 } from 'react-icons/fi';
 import './AdminLayout.css';
 
 export default function AdminLayout() {
   const { user, isLoggedIn, logout } = useAuth();
   const { toggleTheme, isDark } = useTheme();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location]);
 
   if (!isLoggedIn || !user?.isAdmin) {
     return <Navigate to="/" replace />;
@@ -29,8 +35,11 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-layout">
+      {/* Sidebar Overlay */}
+      {sidebarOpen && <div className="admin-sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+      
       {/* Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${sidebarOpen ? 'admin-sidebar--open' : ''}`}>
         <div className="admin-sidebar-header">
           <Link to="/" className="admin-logo" title="Back to Store">
              <span className="admin-logo-icon">◆</span>
@@ -87,6 +96,13 @@ export default function AdminLayout() {
       <main className="admin-main">
         <header className="admin-header">
           <div className="admin-header-title">
+             <button 
+               className="admin-menu-toggle mobile-only" 
+               onClick={() => setSidebarOpen(true)}
+               aria-label="Toggle menu"
+             >
+               <FiMenu />
+             </button>
              <h2>{
                 location.pathname === '/admin' ? 'Dashboard Overview' :
                 location.pathname.includes('/products') ? 'Manage Products' :

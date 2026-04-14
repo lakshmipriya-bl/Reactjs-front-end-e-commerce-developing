@@ -155,7 +155,7 @@ export default function ProductListPage() {
         </div>
 
         {/* Search & Mobile Filter Toggle */}
-        <div className="plp-toolbar">
+        <div className="plp-toolbar" id="plp-toolbar">
           <div className="plp-search">
             <FiSearch className="plp-search__icon" />
             <input
@@ -175,18 +175,20 @@ export default function ProductListPage() {
               </button>
             )}
           </div>
-          <button
-            className="btn btn-secondary plp-filter-toggle"
-            onClick={() => setSidebarOpen(true)}
-            id="filter-toggle"
-          >
-            <FiSliders /> Filters
-          </button>
-          {hasActiveFilters && (
-            <button className="btn btn-danger btn-sm" onClick={clearFilters} id="clear-filters">
-              <FiX /> Clear All
+          <div className="plp-toolbar__actions">
+            <button
+              className="btn btn-secondary plp-filter-toggle"
+              onClick={() => setSidebarOpen(true)}
+              id="filter-toggle"
+            >
+              <FiSliders /> <span>Filters</span>
             </button>
-          )}
+            {hasActiveFilters && (
+              <button className="btn btn-danger btn-sm plp-clear-btn" onClick={clearFilters} id="clear-filters" title="Clear All">
+                <FiX /> <span className="desktop-only">Clear All</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Active filter tags */}

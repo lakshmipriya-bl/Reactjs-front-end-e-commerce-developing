@@ -125,6 +125,44 @@ export default function Navbar() {
       </div>
 
       {menuOpen && <div className="navbar__overlay" onClick={() => setMenuOpen(false)} />}
+
+      {/* Mobile Bottom Navigation */}
+      <div className="navbar__bottom mobile-only">
+        <Link 
+          to="/" 
+          className={`navbar__bottom-link ${location.pathname === '/' ? 'navbar__bottom-link--active' : ''}`}
+        >
+          <FiHome />
+          <span>Home</span>
+        </Link>
+        <Link 
+          to="/products" 
+          className={`navbar__bottom-link ${location.pathname.startsWith('/products') ? 'navbar__bottom-link--active' : ''}`}
+        >
+          <FiGrid />
+          <span>Shop</span>
+        </Link>
+        <Link 
+          to="/wishlist" 
+          className={`navbar__bottom-link ${location.pathname === '/wishlist' ? 'navbar__bottom-link--active' : ''}`}
+        >
+          <div className="navbar__bottom-icon-wrap">
+            <FiHeart className={wishlistCount > 0 ? 'fill-icon' : ''} />
+            {wishlistCount > 0 && <span className="navbar__bottom-badge">{wishlistCount}</span>}
+          </div>
+          <span>Wishlist</span>
+        </Link>
+        <Link 
+          to="/cart" 
+          className={`navbar__bottom-link ${location.pathname === '/cart' ? 'navbar__bottom-link--active' : ''}`}
+        >
+          <div className="navbar__bottom-icon-wrap">
+            <FiShoppingCart />
+            {cartCount > 0 && <span className="navbar__bottom-badge">{cartCount}</span>}
+          </div>
+          <span>Cart</span>
+        </Link>
+      </div>
     </nav>
   );
 }

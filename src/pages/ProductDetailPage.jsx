@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
     <div className="pdp-page">
       <div className="container">
         {/* Breadcrumbs */}
-        <nav className="pdp-breadcrumbs animate-fade-in" id="pdp-breadcrumbs">
+        <nav className="pdp-breadcrumbs animate-fade-in horizontal-scroll" id="pdp-breadcrumbs">
           <Link to="/">Home</Link>
           <FiChevronRight />
           <Link to="/products">Products</Link>
@@ -152,7 +152,7 @@ export default function ProductDetailPage() {
               )}
             </div>
             {images.length > 1 && (
-              <div className="pdp-gallery__thumbs">
+              <div className="pdp-gallery__thumbs horizontal-scroll">
                 {images.map((img, i) => (
                   <button
                     key={i}

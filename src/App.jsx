@@ -63,7 +63,7 @@ function AppContent() {
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/Reactjs-front-end-e-commerce-developing/">
       <ThemeProvider>
         <AuthProvider>
           <OrderProvider>
