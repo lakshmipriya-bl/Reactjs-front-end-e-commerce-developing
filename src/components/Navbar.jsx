@@ -21,7 +21,7 @@ import './Navbar.css';
 export default function Navbar() {
   const { cartCount } = useCart();
   const { user, isLoggedIn, logout } = useAuth();
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { toggleTheme, isDark } = useTheme();
   const { wishlistCount } = useWishlist();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

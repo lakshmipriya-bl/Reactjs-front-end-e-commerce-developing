@@ -14,7 +14,6 @@ import {
   FiShoppingBag,
   FiChevronRight,
   FiShield,
-  FiEdit2,
   FiPlus
 } from 'react-icons/fi';
 import './ProfilePage.css';

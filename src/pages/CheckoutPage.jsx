@@ -14,7 +14,7 @@ import {
 import './CheckoutPage.css';
 
 export default function CheckoutPage() {
-  const { cart, cartTotal, cartCount, clearCartItems } = useCart();
+  const { cart, cartTotal, clearCartItems } = useCart();
   const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
